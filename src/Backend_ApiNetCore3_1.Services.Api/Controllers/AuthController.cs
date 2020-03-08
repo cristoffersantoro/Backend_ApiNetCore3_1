@@ -1,7 +1,7 @@
-﻿using KissLog;
+﻿using Backend_ApiNetCore3_1.Application.Interfaces;
+using KissLog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Backend_ApiNetCore3_1.Application.Interfaces;
 using System;
 using System.Threading.Tasks;
 
@@ -60,24 +60,14 @@ namespace Backend_ApiNetCore3_1.Services.Api.Controllers
         public string Authenticated() => String.Format("Autenticado - {0}", User.Identity.Name);
 
         [HttpGet]
-        [Route("Diretor")]
-        [Authorize(Roles = "DIR")]
-        public string Diretor() => "Diretor";
-
-        [HttpGet]
-        [Route("Rh")]
-        [Authorize(Roles = "RH")]
-        public string Rh() => "RH";
+        [Route("Empregado")]
+        [Authorize(Roles = "EMPREGADO")]
+        public string Empregado() => "Empregado";
 
         [HttpGet]
         [Route("Gestor")]
-        [Authorize(Roles = "GES")]
+        [Authorize(Roles = "GESTOR")]
         public string Gestor() => "Gestor";
-
-        [HttpGet]
-        [Route("BP")]
-        [Authorize(Roles = "BP")]
-        public string BP() => "BP";
 
     }
 }
