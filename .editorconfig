@@ -1,0 +1,10 @@
+﻿[*.cs]
+
+# S3875: "operator==" should not be overloaded on reference types
+dotnet_diagnostic.S3875.severity = suggestion
+
+# S3881: "IDisposable" should be implemented correctly
+dotnet_diagnostic.S3881.severity = suggestion
+
+# S2953: Methods named "Dispose" should implement "IDisposable.Dispose"
+dotnet_diagnostic.S2953.severity = suggestion

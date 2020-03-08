@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Backend_ApiNetCore3_1.Infra.CrossCutting.IoC</AssemblyName>
+    <RootNamespace>Backend_ApiNetCore3_1.Infra.CrossCutting.IoC</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Backend_ApiNetCore3_1.Application\Backend_ApiNetCore3_1.Application.csproj" />
+    <ProjectReference Include="..\Backend_ApiNetCore3_1.Domain\Backend_ApiNetCore3_1.Domain.csproj" />
+    <ProjectReference Include="..\Backend_ApiNetCore3_1.Infra.CrossCutting.Identity\Backend_ApiNetCore3_1.Infra.CrossCutting.Identity.csproj" />
+    <ProjectReference Include="..\Backend_ApiNetCore3_1.Infra.Data\Backend_ApiNetCore3_1.Infra.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.1" />
+  </ItemGroup>
+
+</Project>

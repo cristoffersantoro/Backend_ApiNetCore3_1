@@ -1,0 +1,79 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+- develop
+- releases/*
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+pr:
+- master
+- develop
+- releases/*
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  displayName: Run Build
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Run Tests
+  inputs:
+    command: test
+    projects: src/Nivea.Tests/Nivea.Tests.csproj
+    arguments: '--logger:xunit --configuration $(BuildConfiguration) --collect:"XPlat Code Coverage"'
+    nobuild: true
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'XUnit'
+    testResultsFiles: '**/TestResults.xml'
+    searchFolder: '$(Agent.TempDirectory)'
+    failTaskOnFailedTests: true
+
+- task: reportgenerator@4
+  displayName: ReportGenerator
+  inputs:
+    reports: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+    targetdir: '$(Build.SourcesDirectory)/src/Nivea.Tests/TestResults/'
+    reporttypes: HtmlInline_AzurePipelines;Cobertura;Badges
+    assemblyfilters: '-xunit*'
+
+#- task: DotNetCoreCLI@2
+#  displayName: Run Tests
+
+#- task: DotNetCoreCLI@2
+#  displayName: Install ReportGenerator tool
+#  inputs:
+#    command: custom
+#    custom: tool
+#    arguments: install --tool-path . dotnet-reportgenerator-globaltool  
+  
+#- script: reportgenerator -reports:$(Agent.TempDirectory)/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)\src\Nivea.Tests\TestResults\ -reporttypes:"Cobertura"
+  #displayName: Create reports
+  
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: $(Build.SourcesDirectory)\src\Nivea.Tests\TestResults\Cobertura.xml  
